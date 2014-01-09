@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Centaur
 {
-    static internal class IISExpressProcess
+    public static class IISExpressProcess
     {
         public static void ClearAll()
         {
