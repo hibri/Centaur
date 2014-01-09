@@ -1,6 +1,10 @@
 Centaur a rocket stage used to launch space vehicles. 
 http://en.wikipedia.org/wiki/Centaur_(rocket_stage)
 
+Using Nuget
+
+	Install-Package Centaur
+
 
 A .Net library to automate IIS Express for tests.
 
@@ -8,6 +12,9 @@ Eample usage:
 
 	_iisExpressHost = new IISExpressHost("../../../../src/path/to/website", 3000) {LogOutput = true};
 	_iisExpressHost.Start();
+
+
+	_iisExpressHost.Stop();
 
 
 LogOutput :  writes the IIS Express output to your test runner console.
