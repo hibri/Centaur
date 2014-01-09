@@ -1,0 +1,13 @@
+Centaur a rocket stage used to launch space vehicles. 
+http://en.wikipedia.org/wiki/Centaur_(rocket_stage)
+
+
+A .Net library to automate IIS Express for tests.
+
+Eample usage:
+
+	_iisExpressHost = new IISExpressHost("../../../../src/path/to/website", 3000) {LogOutput = true};
+	_iisExpressHost.Start();
+
+LogOutput :  writes the IIS Express output to your test runner console.
+StatusCheckPath : Check a url to make sure website was loaded. Can be used to warm up before running tests 

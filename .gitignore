@@ -1,0 +1,13 @@
+*ReSharper*
+.idea
+*.user
+*.suo
+obj
+bin
+*~HEAD
+**/*~HEAD
+log-file.txt
+Bin
+*.cache
+packages
+*.nupkg
