@@ -26,7 +26,7 @@
 
     <dependencies>
 
-		<dependency id="NUnit"  />
+		<dependency id="NUnit" version="2.6.3"  />
 
     </dependencies>
 
