@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Threading;
 
@@ -41,6 +42,8 @@ namespace Centaur
         public bool LogOutput { get; set; }
 
         public string StatusCheckPath { get; set; }
+        public TimeSpan StatusCheckInterval { get; set; }
+        public int StatusCheckAttempts { get; set; }
 
         public void Dispose()
         {
@@ -74,16 +77,18 @@ namespace Centaur
 
         public void Stop()
         {
-            _process.Close();
+            KillProcessAndChildren(_process.Id);
         }
 
-        private void CheckHost()
+        private void PerformStatusCheck()
         {
             var url = String.Format("http://localhost:{0}{1}", Port, StatusCheckPath);
 
-            if (TryCheckHost(url) || TryCheckHost(url))
-                return;
-
+            for (var i = 0; i < StatusCheckAttempts; i++)
+            {
+                if (TryStatusCheck(url))
+                    return;
+            }
 
             throw new Exception("Failed to connect to " + url);
         }
@@ -95,15 +100,14 @@ namespace Centaur
 
         private void StartFromPath(string iisExpressPath)
         {
-            string path = Path.GetFullPath(WebSitePath);
-            string args = String.Format("/path:{0} /port:{1} /systray:false", path, Port);
-
+            var path = Path.GetFullPath(WebSitePath);
+            var args = String.Format("/path:{0} /port:{1} /systray:true", path, Port);
 
             StartProcess(iisExpressPath, args);
 
             if (!string.IsNullOrEmpty(StatusCheckPath))
             {
-                CheckHost();
+                PerformStatusCheck();
             }
             Log(path, args);
         }
@@ -141,7 +145,7 @@ namespace Centaur
             _process.BeginOutputReadLine();
         }
 
-        private bool TryCheckHost(string url)
+        private bool TryStatusCheck(string url)
         {
             try
             {
@@ -149,10 +153,28 @@ namespace Centaur
             }
             catch (WebException)
             {
-                Thread.Sleep(20);
+                Thread.Sleep(StatusCheckInterval);
                 return false;
             }
             return true;
+        }
+
+        private static void KillProcessAndChildren(int pid)
+        {
+            var searcher = new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + pid);
+            var managementObjects = searcher.Get().Cast<ManagementObject>();
+            foreach (var managementObject in managementObjects)
+            {
+                KillProcessAndChildren(Convert.ToInt32(managementObject["ProcessID"]));
+            }
+            try
+            {
+                Process.GetProcessById(pid).Kill();
+            }
+            catch (ArgumentException)
+            {
+                // Process already exited.
+            }
         }
     }
 }
