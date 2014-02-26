@@ -77,6 +77,7 @@ namespace Centaur
 
         public void Stop()
         {
+            _process.StandardInput.Write("Q");
             KillProcessAndChildren(_process.Id);
         }
 
@@ -101,7 +102,7 @@ namespace Centaur
         private void StartFromPath(string iisExpressPath)
         {
             var path = Path.GetFullPath(WebSitePath);
-            var args = String.Format("/path:{0} /port:{1} /systray:true", path, Port);
+            var args = String.Format("/path:{0} /port:{1} /systray:false", path, Port);
 
             StartProcess(iisExpressPath, args);
 
@@ -125,6 +126,7 @@ namespace Centaur
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
+                RedirectStandardInput = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 CreateNoWindow = true
             };
@@ -139,6 +141,7 @@ namespace Centaur
                     (sender, eventArgs) => Console.WriteLine("{0} STDOUT => {1}", dirname, eventArgs.Data);
                 _process.ErrorDataReceived +=
                     (sender, eventArgs) => Console.WriteLine("{0} STDERR => {1}", dirname, eventArgs.Data);
+                
             }
 
             _process.Start();
