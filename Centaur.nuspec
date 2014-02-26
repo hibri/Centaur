@@ -1,4 +1,4 @@
-��<?xml version="1.0" encoding="utf-16"?>
+<?xml version="1.0" encoding="utf-16"?>
 
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 
@@ -6,7 +6,7 @@
 
     <id>Centaur</id>
 
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 
     <title>Centaur</title>
 
