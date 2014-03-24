@@ -132,11 +132,15 @@ namespace Centaur
             if (LogOutput)
             {
                 string dirname = "";
-                if (WebSitePath != null)
+                if (! string.IsNullOrEmpty(WebSitePath))
                 {
-                    dirname =
-                        WebSitePath.Split(new[] {Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries)
-                            .Last();
+                    var pathSegments = WebSitePath.Split(new[] {Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries);
+                    if (pathSegments.Count() > 0)
+                    {
+                        dirname =
+                            pathSegments
+                                .Last();
+                    }
                 }
                 _process.OutputDataReceived +=
                     (sender, eventArgs) => Console.WriteLine("{0} STDOUT => {1}", dirname, eventArgs.Data);
