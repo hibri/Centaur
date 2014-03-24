@@ -10,28 +10,25 @@ namespace Centaur
 {
     public class IISExpressHost : IDisposable
     {
-        private readonly IISExpressPathResolver _iisExpressPathResolver;
+        private readonly IISExpressPathResolver _iisExpressPathResolver = new IISExpressPathResolver();
         private readonly string _scriptPath;
         private Process _process;
 
-        private IISExpressHost()
-        {
-            _iisExpressPathResolver = new IISExpressPathResolver();
-        }
+        
 
         public IISExpressHost(string webSitePath, int port)
-            : this()
         {
             LogOutput = true;
             WebSitePath = webSitePath;
             Port = port;
             
         }
-
+        
+        [Obsolete("Don't use to launch IIS Express via scripts")]
         public IISExpressHost(string scriptPath)
-            : this()
         {
             _scriptPath = scriptPath;
+            WebSitePath = "";
             if (!File.Exists(_scriptPath))
                 throw new ArgumentException("Couldn't locate the configuration script for IIS express site");
         }
@@ -134,9 +131,13 @@ namespace Centaur
             _process.EnableRaisingEvents = true;
             if (LogOutput)
             {
-                var dirname =
-                    WebSitePath.Split(new[] {Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries)
-                        .Last();
+                string dirname = "";
+                if (WebSitePath != null)
+                {
+                    dirname =
+                        WebSitePath.Split(new[] {Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries)
+                            .Last();
+                }
                 _process.OutputDataReceived +=
                     (sender, eventArgs) => Console.WriteLine("{0} STDOUT => {1}", dirname, eventArgs.Data);
                 _process.ErrorDataReceived +=
