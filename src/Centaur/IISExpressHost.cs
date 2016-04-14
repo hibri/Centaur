@@ -24,10 +24,10 @@ namespace Centaur
             
         }
 
-        public IISExpressHost(ApplicationHostConfig applicationHostConfig)
+        public IISExpressHost(IISExpressConfig iisExpressConfig)
         {
             LogOutput = true;
-            Config = applicationHostConfig;
+            Config = iisExpressConfig;
         }
 
         [Obsolete("Don't use to launch IIS Express via scripts")]
@@ -41,7 +41,7 @@ namespace Centaur
 
         public int Port { get; private set; }
         public string WebSitePath { get; private set; }
-        public ApplicationHostConfig Config { get; private set; }
+        public IISExpressConfig Config { get; private set; }
 
         public bool LogOutput { get; set; }
 
@@ -159,7 +159,7 @@ namespace Centaur
                                 .Last();
                     }
                 }
-                else if (!string.IsNullOrEmpty(Config.Path))
+                else if (Config != null)
                 {
                     outputPrefix = Path.GetFileName(Config.Path);
                 }

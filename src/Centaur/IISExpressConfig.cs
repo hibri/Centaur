@@ -1,10 +1,10 @@
 namespace Centaur
 {
-    public class ApplicationHostConfig
+    public class IISExpressConfig
     {
         public string Path { get; private set; }
 
-        public ApplicationHostConfig(string path)
+        public IISExpressConfig(string path)
         {
             Path = path;
         }

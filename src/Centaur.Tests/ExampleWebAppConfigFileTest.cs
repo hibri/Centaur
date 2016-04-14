@@ -17,7 +17,7 @@ namespace Centaur.Tests
         {
             configurePhysicalPath(_configFilePath, _webAppPath);
 
-            _host = new IISExpressHost(new ApplicationHostConfig(_configFilePath));
+            _host = new IISExpressHost(new IISExpressConfig(_configFilePath));
             _host.Start();
         }
 
