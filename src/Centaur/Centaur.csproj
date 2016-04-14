@@ -35,6 +35,7 @@
     <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IISExpressConfig.cs" />
     <Compile Include="IISExpressHost.cs" />
     <Compile Include="IISExpressPathResolver.cs" />
     <Compile Include="IISExpressProcess.cs" />

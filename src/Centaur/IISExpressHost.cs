@@ -23,7 +23,13 @@ namespace Centaur
             Port = port;
             
         }
-        
+
+        public IISExpressHost(IISExpressConfig iisExpressConfig)
+        {
+            LogOutput = true;
+            Config = iisExpressConfig;
+        }
+
         [Obsolete("Don't use to launch IIS Express via scripts")]
         public IISExpressHost(string scriptPath)
         {
@@ -35,6 +41,7 @@ namespace Centaur
 
         public int Port { get; private set; }
         public string WebSitePath { get; private set; }
+        public IISExpressConfig Config { get; private set; }
 
         public bool LogOutput { get; set; }
 
@@ -91,15 +98,24 @@ namespace Centaur
             throw new Exception("Failed to connect to " + url);
         }
 
-        private void Log(string path, string args)
+        private void Log(string args)
         {
-            Console.WriteLine("Started IISExpress for {0} {1} on port {2}", path, args, Port);
+            Console.WriteLine("Started IISExpress with args: {0}", args);
         }
 
         private void StartFromPath(string iisExpressPath)
         {
-            var path = Path.GetFullPath(WebSitePath);
-            var args = String.Format("/path:{0} /port:{1} /systray:false", path, Port);
+            string args;
+            if (Config != null)
+            {
+                var configPath = Path.GetFullPath(Config.Path);
+                args = String.Format("/config:\"{0}\" /systray:false", configPath);
+            }
+            else
+            {
+                var path = Path.GetFullPath(WebSitePath);
+                args = String.Format("/path:{0} /port:{1} /systray:false", path, Port);
+            }
 
             StartProcess(iisExpressPath, args);
 
@@ -107,7 +123,8 @@ namespace Centaur
             {
                 PerformStatusCheck();
             }
-            Log(path, args);
+
+            Log(args);
         }
 
         private void StartFromScript()
@@ -131,21 +148,26 @@ namespace Centaur
             _process.EnableRaisingEvents = true;
             if (LogOutput)
             {
-                string dirname = "";
+                string outputPrefix = "";
                 if (! string.IsNullOrEmpty(WebSitePath))
                 {
                     var pathSegments = WebSitePath.Split(new[] {Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries);
                     if (pathSegments.Count() > 0)
                     {
-                        dirname =
+                        outputPrefix =
                             pathSegments
                                 .Last();
                     }
                 }
+                else if (Config != null)
+                {
+                    outputPrefix = Path.GetFileName(Config.Path);
+                }
+
                 _process.OutputDataReceived +=
-                    (sender, eventArgs) => Console.WriteLine("{0} STDOUT => {1}", dirname, eventArgs.Data);
+                    (sender, eventArgs) => Console.WriteLine("{0} STDOUT => {1}", outputPrefix, eventArgs.Data);
                 _process.ErrorDataReceived +=
-                    (sender, eventArgs) => Console.WriteLine("{0} STDERR => {1}", dirname, eventArgs.Data);
+                    (sender, eventArgs) => Console.WriteLine("{0} STDERR => {1}", outputPrefix, eventArgs.Data);
                 
             }
 
