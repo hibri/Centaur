@@ -48,6 +48,7 @@ namespace Centaur
         public string StatusCheckPath { get; set; }
         public TimeSpan StatusCheckInterval { get; set; }
         public int StatusCheckAttempts { get; set; }
+        public bool TraceErrors { get; set; }
 
         public void Dispose()
         {
@@ -115,6 +116,11 @@ namespace Centaur
             {
                 var path = Path.GetFullPath(WebSitePath);
                 args = String.Format("/path:{0} /port:{1} /systray:false", path, Port);
+            }
+
+            if (TraceErrors)
+            {
+                args += " /trace:error";
             }
 
             StartProcess(iisExpressPath, args);
