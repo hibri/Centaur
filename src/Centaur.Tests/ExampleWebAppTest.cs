@@ -12,7 +12,7 @@ namespace Centaur.Tests
         [SetUp]
         public void StartHost()
         {
-            _host = new IISExpressHost("../../../Centaur.ExampleWebApp/", 9059);
+            _host = new IISExpressHost(TestContext.CurrentContext.TestDirectory + "../../../../Centaur.ExampleWebApp/", 9059);
             _host.Start();
         }
 

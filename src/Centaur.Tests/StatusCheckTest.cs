@@ -14,7 +14,7 @@ namespace Centaur.Tests
         [SetUp]
         public void CreateHost()
         {
-            _host = new IISExpressHost("../../../Centaur.ExampleWebApp/", 9058)
+            _host = new IISExpressHost(TestContext.CurrentContext.TestDirectory + "../../../../Centaur.ExampleWebApp/", 9058)
             {
                 StatusCheckPath = "/status",
                 StatusCheckInterval = TimeSpan.FromMilliseconds(100),

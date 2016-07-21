@@ -9,12 +9,14 @@ namespace Centaur.Tests
     public class ExampleWebAppConfigFileTest
     {
         private IISExpressHost _host;
-        private readonly string _configFilePath = Path.GetFullPath("../../applicationhost.config");
-        private readonly string _webAppPath = Path.GetFullPath("../../../Centaur.ExampleWebApp/");
+        private string _configFilePath;
+        private string _webAppPath;
 
         [SetUp]
         public void StartHost()
         {
+             _configFilePath = Path.GetFullPath(TestContext.CurrentContext.TestDirectory + "/applicationhost.config");
+              _webAppPath = Path.GetFullPath(TestContext.CurrentContext.TestDirectory + "../../../../Centaur.ExampleWebApp/");
             configurePhysicalPath(_configFilePath, _webAppPath);
 
             _host = new IISExpressHost(new IISExpressConfig(_configFilePath));
