@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="ExampleWebAppConfigFileTest.cs" />
     <Compile Include="ExampleWebAppTest.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="IisConfigInitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StatusCheckTest.cs" />
   </ItemGroup>
