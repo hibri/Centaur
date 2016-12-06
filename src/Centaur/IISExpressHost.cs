@@ -47,9 +47,11 @@ namespace Centaur
         public bool LogOutput { get; set; }
 
         public string StatusCheckPath { get; set; }
-        public TimeSpan StatusCheckInterval { get; set; }
-        public int StatusCheckAttempts { get; set; }
+        public TimeSpan StatusCheckInterval { get; set; } = TimeSpan.FromMilliseconds(500);
+        public int StatusCheckAttempts { get; set; } = 0;
+        public bool IsNotFoundValid { get; set; } = false;
         public bool TraceErrors { get; set; }
+        public bool SystemTray { get; set; } = false;
 
         public Dictionary<string, string> EnvironmentVariables { get; set; } = new Dictionary<string, string>();
 
@@ -85,6 +87,7 @@ namespace Centaur
 
         public void Stop()
         {
+            if (_process == null) return;
             _process.StandardInput.Write("Q");
             KillProcessAndChildren(_process.Id);
         }
@@ -113,12 +116,14 @@ namespace Centaur
             if (Config != null)
             {
                 var configPath = Path.GetFullPath(Config.Path);
-                args = String.Format("/config:\"{0}\" /systray:false", configPath);
+                args = string.IsNullOrEmpty(Config.Site) ? 
+                    String.Format("/config:\"{0}\" /systray:{1}", configPath, SystemTray.ToString().ToLower())
+                    : String.Format("/config:\"{0}\" /site:\"{1}\" /systray:{2} ", configPath, Config.Site, SystemTray.ToString().ToLower());
             }
             else
             {
                 var path = Path.GetFullPath(WebSitePath);
-                args = String.Format("/path:{0} /port:{1} /systray:false", path, Port);
+                args = String.Format("/path:{0} /port:{1} /systray:{2}", path, Port, SystemTray.ToString().ToLower());
             }
 
             if (TraceErrors)
@@ -191,14 +196,26 @@ namespace Centaur
             _process.BeginOutputReadLine();
         }
 
+        public bool IsAlive()
+        {
+            try
+            {
+                PerformStatusCheck();
+                return true;
+            }
+            catch { return false; }
+        }
+
         private bool TryStatusCheck(string url)
         {
             try
             {
-                new WebClient().DownloadString(url);
+                WebRequest r = WebRequest.Create(url);
+                var resp = r.GetResponse();
             }
-            catch (WebException)
+            catch (WebException e)
             {
+                if (e.Message.Contains("404") && IsNotFoundValid) return true;
                 Thread.Sleep(StatusCheckInterval);
                 return false;
             }

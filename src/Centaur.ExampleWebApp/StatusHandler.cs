@@ -8,7 +8,7 @@ namespace Centaur.ExampleWebApp
 {
     public class StatusHandler : IHttpHandler
     {
-        private static readonly List<DateTime> WarmUps = new List<DateTime>();
+        internal static readonly List<DateTime> WarmUps = new List<DateTime>();
 
         public void ProcessRequest(HttpContext context)
         {

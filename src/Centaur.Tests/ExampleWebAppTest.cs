@@ -25,21 +25,7 @@ namespace Centaur.Tests
         [Test]
         public void IisExpressHostedWebAppRespondsToRequests()
         {
-            Assert.That(Get("http://localhost:9059"), Is.EqualTo("hello!"));
-        }
-
-        static string Get(string url)
-        {
-            var request = WebRequest.Create(url);
-            using (var response = request.GetResponse())
-            {
-                using (var responseStream = response.GetResponseStream())
-                {
-                    if (responseStream == null) return null;
-                    var reader = new StreamReader(responseStream);
-                    return reader.ReadToEnd();
-                }
-            }
+            Assert.That(Helpers.Get("http://localhost:9059"), Is.EqualTo("hello!"));
         }
     }
 }
