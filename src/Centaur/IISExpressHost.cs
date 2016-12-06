@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -49,6 +50,8 @@ namespace Centaur
         public TimeSpan StatusCheckInterval { get; set; }
         public int StatusCheckAttempts { get; set; }
         public bool TraceErrors { get; set; }
+
+        public Dictionary<string, string> EnvironmentVariables { get; set; } = new Dictionary<string, string>();
 
         public void Dispose()
         {
@@ -141,7 +144,7 @@ namespace Centaur
         private void StartProcess(string iisExpressPath, string args)
         {
             if (LogOutput) Console.WriteLine(iisExpressPath + " " + args);
-            _process.StartInfo = new ProcessStartInfo(iisExpressPath, args)
+            var startInfo = new ProcessStartInfo(iisExpressPath, args)
             {
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
@@ -150,6 +153,13 @@ namespace Centaur
                 WindowStyle = ProcessWindowStyle.Hidden,
                 CreateNoWindow = true
             };
+
+            foreach (var variable in EnvironmentVariables)
+            {
+                startInfo.EnvironmentVariables.Add(variable.Key, variable.Value);
+            }
+
+            _process.StartInfo = startInfo;
 
             _process.EnableRaisingEvents = true;
             if (LogOutput)
