@@ -1,49 +1,19 @@
 <?xml version="1.0" encoding="utf-16"?>
-
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-
   <metadata>
-
     <id>Centaur</id>
-
     <version>1.0.7</version>
-
     <title>Centaur</title>
-
     <authors>Hibri Marzook</authors>
-
     <owners>Hibri Marzook</owners>
-
     <projectUrl>https://github.com/hibri/Centaur</projectUrl>
-
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-
     <description>Centaur is a library to launch IISExpress for test automation.</description>
-
     <summary>Centaur is a library to launch IISExpress for test automation.</summary>
-
     <tags>centaur testing stubs http fluent iisexpress automation</tags>
-
-    <dependencies>
-
-		<dependency id="NUnit" version="3.4.1"  />
-
-    </dependencies>
-
-
-
   </metadata>
-
   <files>
-
     <file src="src\Centaur\bin\release\Centaur.dll" target="lib\net40" />
-
     <file src="src\Centaur\bin\release\Centaur.pdb" target="lib\net40" />
-
   </files>
-
-
-
-
-
 </package>
